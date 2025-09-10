@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors - Classic Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating decorative elements -->
+    <div class="floating-element">🪨</div>
+    <div class="floating-element">✂️</div>
+    <div class="floating-element">📄</div>
+    
+    <div class="game-container">
+        <h1 class="game-title">
+            <span class="game-icon">🪨</span>
+            Rock Paper Scissors
+            <span class="game-icon">✂️</span>
+        </h1>
+        <p class="game-subtitle">Choose your weapon and challenge the computer!</p>
+        <p class="game-subtitle">Rock beats Scissors <br/>Scissors beats Paper <br/>Paper beats Rock</p>
+        
+        <!-- Score Board -->
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">Your Score</div>
+                <div class="score-value" id="userScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Computer Score</div>
+                <div class="score-value" id="computerScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Draws</div>
+                <div class="score-value" id="drawScore">0</div>
+            </div>
+        </div>
+        
+        <!-- Game Buttons -->
+        <div class="button-container">
+            <button class="game-button rock-button" onclick="playGame('Rock')">
+                🪨 Rock
+            </button>
+            <button class="game-button paper-button" onclick="playGame('Paper')">
+                📄 Paper
+            </button>
+            <button class="game-button scissors-button" onclick="playGame('Scissors')">
+                ✂️ Scissors
+            </button>
+        </div>
+        
+        <!-- Result Display -->
+        <div class="result-container" id="resultContainer">
+            <div class="result-text" id="resultText">Make your choice to start playing!</div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let userScore = 0;
+        let computerScore = 0;
+        let drawScore = 0;
+        
+        // Update score display
+        function updateScore() {
+            document.getElementById('userScore').textContent = userScore;
+            document.getElementById('computerScore').textContent = computerScore;
+            document.getElementById('drawScore').textContent = drawScore;
+        }
+        
+        // Show result with animation
+        function showResult(message, resultType) {
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.textContent = message;
+            resultText.className = 'result-text ' + resultType;
+            
+            resultContainer.classList.remove('show');
+            setTimeout(() => {
+                resultContainer.classList.add('show');
+            }, 100);
+        }
+        
+        // Main game logic
+        function playGame(userChoice) {
+            // Show loading state
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = document.getElementById('resultText');
+            resultText.innerHTML = '<div class="loading"></div> Thinking...';
+            resultContainer.classList.add('show');
+            
+            // Simulate thinking delay
+            setTimeout(() => {
+                // Generate computer choice
+                const randomNumber = Math.floor(Math.random() * 3);
+                let computerChoice = '';
+                
+                if (randomNumber === 0) {
+                    computerChoice = 'Rock';
+                } else if (randomNumber === 1) {
+                    computerChoice = 'Paper';
+                } else {
+                    computerChoice = 'Scissors';
+                }
+                
+                // Determine result
+                let result = '';
+                let resultType = '';
+                
+                if (userChoice === computerChoice) {
+                    result = 'It\'s a draw! Both chose ' + userChoice;
+                    resultType = 'result-draw';
+                    drawScore++;
+                } else if (
+                    (userChoice === 'Rock' && computerChoice === 'Scissors') ||
+                    (userChoice === 'Scissors' && computerChoice === 'Paper') ||
+                    (userChoice === 'Paper' && computerChoice === 'Rock')
+                ) {
+                    result = `You win! ${userChoice} beats ${computerChoice}`;
+                    resultType = 'result-won';
+                    userScore++;
+                } else {
+                    result = `Computer wins! ${computerChoice} beats ${userChoice}`;
+                    resultType = 'result-lost';
+                    computerScore++;
+                }
+                
+                // Show result
+                showResult(result, resultType);
+                updateScore();
+                
+                // Log to console
+                console.log(`You chose: ${userChoice}, Computer chose: ${computerChoice}, Result: ${result}`);
+            }, 1000);
+        }
+        
+        // Initialize
+        updateScore();
+    </script>
+</body>
+</html>
